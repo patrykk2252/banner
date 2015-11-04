@@ -1,0 +1,11 @@
+---
+- name: install sshd
+  apt: pkg=openssh-server state=present force=yes update_cache=yes cache_valid_time=3600 
+- name: remove motd
+  file: path=/etc/motd state=absent
+- name: install banner (issue.net)
+  copy: content={{ banner_text }} dest=/etc/issue.net owner=root group=root mode=0644
+- name: enable banner
+  replace: dest=/etc/ssh/sshd_config regexp='^#Banner /etc/issue.net' replace='Banner /etc/issue.net'
+  notify:
+    restart sshd
